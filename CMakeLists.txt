@@ -3,4 +3,4 @@ project(maker_breaker_ham_cycle_game)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(maker_breaker_ham_cycle_game src/main.cpp)
+add_executable(maker_breaker_ham_cycle_game src/main.cpp src/game.cpp src/edge.cpp)

@@ -1,14 +1,11 @@
 #include <stdio.h>
-#include "graph.cpp"
+#include "kn_cn_graph.cpp"
 
 using namespace std;
 
 
 int main() {
-    Graph graph(6);
-    graph.populateAsCompleteGraph();
-    graph.deleteCycle();
-    graph.printGraph();
-    graph.generateWinningSets();
+    KnCnGraph graph(6);
+    graph.printEdges();
 
 }
