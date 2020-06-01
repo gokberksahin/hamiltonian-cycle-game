@@ -1,7 +1,9 @@
 #include <iostream>
+#include <utility>
 #include <vector>
 #include <set>
 #include <queue>
+#include <algorithm>
 #include "kn_cn_graph.cpp"
 
 
@@ -17,26 +19,84 @@ public:
 
     Game(KnCnGraph& graph) {
         this->graph = graph;
+        gameBoard = graph.edges;
         generateWinningSets();
     }
 
-
-
-    // Check for if Maker has won,
-    bool checkWinner(set<set<Edge>> sets, vector<Edge> gameBoard) {
-
-        for (set<Edge> winningSet : sets) {
-
-        }
-
+    void play(bool startingPlayer) {
+        BestMove startingMove;
+        BestMove bestMoves = miniMax(startingPlayer, startingMove, 0);
+        string firstMove = startingPlayer ? "Maker" : "Breaker";
+        string winner = bestMoves.score == 1 ? "Maker" : "Breaker";
+        cout << "Game has started with first player: " << firstMove << endl;
+        cout << winner << " has won." << endl;
     }
 
-    void miniMax() {
-
-
-    }
 
 private:
+
+
+    void printMoves(vector<Edge> makerMoves, vector<Edge> breakerMoves) {
+        int i = makerMoves.size();
+        int j = breakerMoves.size();
+    }
+
+
+    // Check if Maker has won
+    bool hasMakerWon(const vector<Edge>& edges) {
+        set<Edge> edgeSet(edges.begin(), edges.end());
+        for (const set<Edge>& winningSet : winningSets) {
+            set<Edge> intersect;
+            set_intersection(winningSet.begin(), winningSet.end(), edgeSet.begin(), edgeSet.end(), inserter(intersect, intersect.begin()));
+            if (intersect.size() == winningSet.size()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    struct BestMove {
+        vector<Edge> makerEdges;
+        vector<Edge> breakerEdges;
+        set<Edge> seen;
+        int score;
+    };
+
+    BestMove miniMax(bool isMaximizer, BestMove move, int depth) {
+
+        //cout << "depth at " << depth << endl;
+
+        if (move.makerEdges.size() >= graph.size - 1 && hasMakerWon(move.makerEdges)) {
+            move.score = 1;
+            return move;
+        }
+
+        if (move.makerEdges.size() + move.breakerEdges.size() == gameBoard.size()) {
+            move.score = -1;
+            return move;
+        }
+
+        BestMove bestMove;
+
+        for (Edge e : gameBoard) {
+            if (move.seen.find(e) == move.seen.end()) {
+                move.seen.insert(e);
+                BestMove nextMove = move;
+                if (isMaximizer) {
+                    nextMove.makerEdges.push_back(e);
+                } else {
+                    nextMove.breakerEdges.push_back(e);
+                }
+
+                BestMove nextBestMove = miniMax(!isMaximizer, nextMove, depth + 1);
+                if (isMaximizer && nextBestMove.score == 1) return nextBestMove;
+                if (!isMaximizer && nextBestMove.score == -1) return nextBestMove;
+                bestMove = nextBestMove;
+            }
+        }
+
+        return bestMove;
+    }
 
     void printWinningSets() {
         int i = 1;
@@ -49,12 +109,6 @@ private:
         }
     }
 
-    /*
-        Use BFS to find all the ham cycles by using the fact that starting node's neighbours should be the first and the last element
-        in the cycle (excluding the starting point ofc). Apply this logic recursively to get all elements in a cycle.
-
-        Time complexity : O(n!)
-    */
 
     // Reperesentation of a possible cycle.
     struct Cycle {
@@ -62,6 +116,13 @@ private:
         vector<int> nodes; // This vector will store the order of the nodes.
     };
 
+
+    /*
+        Use BFS to find all the ham cycles by using the fact that starting node's neighbours should be the first and the last element
+        in the cycle (excluding the starting point ofc). Apply this logic recursively to get all elements in a cycle.
+
+        Time complexity : O(n!)
+    */
     void generateWinningSets() {
 
         queue<Cycle> q;
@@ -100,9 +161,6 @@ private:
                 }
             }
         }
-        printWinningSets();
-
-
     }
 
 };
