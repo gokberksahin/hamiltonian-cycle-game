@@ -37,11 +37,9 @@ private:
 
     void generateAllEdges() {
         for (int i = 0; i < size - 2; i++) {
-            edges.emplace_back(i , i + 2);
-            if (i + 3 < size)
-                edges.emplace_back(i , i + 3);
-            if (i + 4 < size)
-                edges.emplace_back(i , i + 4);
+            for (int j = 2; j < size - 1 && i + j < size; j++)
+                edges.emplace_back(i , i + j);
+
         }
     }
 

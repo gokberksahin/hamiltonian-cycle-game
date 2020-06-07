@@ -71,6 +71,7 @@ private:
             return move;
         }
 
+        // if winningsete.empty() return move move.score -1
         if (move.makerEdges.size() + move.breakerEdges.size() == gameBoard.size()) {
             move.score = -1;
             return move;
@@ -82,6 +83,8 @@ private:
             if (move.seen.find(e) == move.seen.end()) {
                 move.seen.insert(e);
                 BestMove nextMove = move;
+                // copy winning set
+                // winnings set - e
                 if (isMaximizer) {
                     nextMove.makerEdges.push_back(e);
                 } else {

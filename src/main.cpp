@@ -4,7 +4,8 @@ using namespace std;
 
 
 int main() {
-    KnCnGraph graph(5);
+    KnCnGraph graph(7);
+    graph.printEdges();
     Game game(graph);
     //auto start = chrono::high_resolution_clock::now();
     game.play(true);
