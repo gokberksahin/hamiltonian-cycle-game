@@ -1,5 +1,6 @@
-class Edge {
+#include <algorithm>
 
+class Edge {
 public:
     int src, dest;
 
@@ -8,7 +9,7 @@ public:
     }
 
     bool operator<(const Edge& edge) const {
-        return !(((src == edge.src) && (dest == edge.dest)) || ((src == edge.dest) && (dest == edge.src)));
+        return std::minmax(src, dest) < std::minmax(edge.src, edge.dest);
     }
 
     Edge(int src, int dest) {
